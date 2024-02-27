@@ -58,7 +58,7 @@ function RootLayoutNav() {
     <>
     <SessionProvider>
       <PaperProvider theme={colorScheme == "dark" ? DarkTheme : DefaultTheme}>
-        <StatusBar  backgroundColor={theme.colors.primary} />
+        <StatusBar  backgroundColor={theme.colors.background} />
         <Stack>
           <Stack.Screen name="(app)" options={{ headerShown: false }} />
           <Stack.Screen name="login" options={{ presentation: "card", headerShown: false }} />
