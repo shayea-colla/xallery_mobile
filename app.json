@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Xallery_mobile",
-    "slug": "Xallery_mobile",
+    "name": "Xallery",
+    "slug": "Xallery",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",

@@ -1,11 +1,16 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { PaperProvider, useTheme } from 'react-native-paper';
+import { DarkTheme, LightTheme as DefaultTheme } from '@/constants/Theme'
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 
+import { SessionProvider } from '@/authentication/ctx';
+
 import { useColorScheme } from '@/components/useColorScheme';
+import { StatusBar } from 'expo-status-bar';
+
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -14,7 +19,7 @@ export {
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: '(tabs)',
+  initialRouteName: '(app)',
 };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -44,15 +49,22 @@ export default function RootLayout() {
   return <RootLayoutNav />;
 }
 
+
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
+  const theme = useTheme()
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-      </Stack>
-    </ThemeProvider>
+    <>
+    <SessionProvider>
+      <PaperProvider theme={colorScheme == "dark" ? DarkTheme : DefaultTheme}>
+        <StatusBar  backgroundColor={theme.colors.primary} />
+        <Stack>
+          <Stack.Screen name="(app)" options={{ headerShown: false }} />
+          <Stack.Screen name="login" options={{ presentation: "card", headerShown: false }} />
+        </Stack>
+      </PaperProvider>
+    </SessionProvider>
+    </>
   );
 }

@@ -4,9 +4,11 @@
  */
 
 import { Text as DefaultText, View as DefaultView } from 'react-native';
+import { useTheme } from 'react-native-paper';
 
 import Colors from '@/constants/Colors';
 import { useColorScheme } from './useColorScheme';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type ThemeProps = {
   lightColor?: string;
@@ -39,7 +41,26 @@ export function Text(props: TextProps) {
 
 export function View(props: ViewProps) {
   const { style, lightColor, darkColor, ...otherProps } = props;
-  const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, 'background');
+  const theme = useTheme()
+  //const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, 'background');
+  const backgroundColor = theme.colors.background
 
   return <DefaultView style={[{ backgroundColor }, style]} {...otherProps} />;
+}
+
+export function SafeAreaView(props: ViewProps) {
+  const { style, lightColor, darkColor, ...otherProps } = props;
+  const insets = useSafeAreaInsets()
+  const theme = useTheme()
+
+  // Apply safe area rules to this type of view
+  const safeStyle = {
+      backgroundColor: theme.colors.background,
+      paddingTop: insets.top,
+      paddingBottom: insets.bottom,
+      paddingLeft: insets.left,
+      paddingRight: insets.right,
+  }
+
+  return <DefaultView style={[safeStyle, style]} {...otherProps} />;
 }
