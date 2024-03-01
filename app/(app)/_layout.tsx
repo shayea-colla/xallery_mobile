@@ -2,10 +2,8 @@ import { Redirect, Tabs } from 'expo-router';
 import { Text, BottomNavigation } from 'react-native-paper';
 import { CommonActions } from '@react-navigation/native';
 
-import { useColorScheme } from '@/components/useColorScheme';
 import { useSession } from '@/authentication/ctx';
 import { MaterialIcons as Icon } from '@expo/vector-icons';
-import { StatusBar } from 'expo-status-bar';
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 

@@ -3,7 +3,7 @@
  * https://docs.expo.io/guides/color-schemes/
  */
 
-import { Text as DefaultText, View as DefaultView } from 'react-native';
+import { Text as DefaultText, View as DefaultView, ScrollView } from 'react-native';
 import { useTheme } from 'react-native-paper';
 
 import Colors from '@/constants/Colors';
@@ -15,8 +15,8 @@ type ThemeProps = {
   darkColor?: string;
 };
 
-export type TextProps = ThemeProps & DefaultText['props'];
-export type ViewProps = ThemeProps & DefaultView['props'];
+export type TextProps = DefaultText['props'];
+export type ViewProps = DefaultView['props'];
 
 export function useThemeColor(
   props: { light?: string; dark?: string },
@@ -32,35 +32,31 @@ export function useThemeColor(
   }
 }
 
-export function Text(props: TextProps) {
-  const { style, lightColor, darkColor, ...otherProps } = props;
-  const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
-
-  return <DefaultText style={[{ color }, style]} {...otherProps} />;
-}
 
 export function View(props: ViewProps) {
-  const { style, lightColor, darkColor, ...otherProps } = props;
+  const { style, ...otherProps } = props;
   const theme = useTheme()
   //const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, 'background');
-  const backgroundColor = theme.colors.background
 
-  return <DefaultView style={[{ backgroundColor }, style]} {...otherProps} />;
+  return <DefaultView style={[{ backgroundColor: theme.colors.background }, style]} {...otherProps} />;
 }
 
 export function SafeAreaView(props: ViewProps) {
-  const { style, lightColor, darkColor, ...otherProps } = props;
+  const { style, ...otherProps } = props;
   const insets = useSafeAreaInsets()
-  const theme = useTheme()
 
   // Apply safe area rules to this type of view
   const safeStyle = {
-      backgroundColor: theme.colors.background,
       paddingTop: insets.top,
       paddingBottom: insets.bottom,
       paddingLeft: insets.left,
       paddingRight: insets.right,
+      flex: 1,
   }
 
-  return <DefaultView style={[safeStyle, style]} {...otherProps} />;
+  return (
+    <View style={safeStyle} >
+        <View style={[style, {marginEnd: 16, marginStart: 16}]} {...otherProps} />
+    </View>
+  );
 }

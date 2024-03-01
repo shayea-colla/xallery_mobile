@@ -1,10 +1,8 @@
 import { StyleSheet } from 'react-native';
-import { View, SafeAreaView } from '@components/Themed';
-import { Text, useTheme } from 'react-native-paper';
-import { StatusBar } from 'expo-status-bar';
+import { SafeAreaView } from '@components/Themed';
+import { Text } from 'react-native-paper';
 
 export default function Designers() {
-    const theme = useTheme()
   return (
     <SafeAreaView style={styles.container}>
       <Text variant='headlineLarge'>Designers</Text>

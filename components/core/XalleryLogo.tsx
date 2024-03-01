@@ -20,8 +20,6 @@ const XalleryLogo = () => {
 
 
 const styles = StyleSheet.create({
-  container: {
-  },
   image: {
     height: 200
   }

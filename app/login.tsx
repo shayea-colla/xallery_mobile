@@ -25,7 +25,7 @@ export default function Login() {
         await Login(username, password)
         router.replace("/profile")
       } catch (error) {
-        setErrorMessage("Username or Password is Incorrect")
+        setErrorMessage(String(error))
       } finally {
         setIsSending(false)
       }
