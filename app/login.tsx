@@ -22,7 +22,7 @@ export default function Login() {
     if (!EmptyInputs) {
       setIsSending(true)
       try {
-        await Login(username, password)
+                await Login(username, password)
         router.replace("/profile")
       } catch (error) {
         setErrorMessage(String(error))
@@ -31,6 +31,7 @@ export default function Login() {
       }
     }
   }
+
 
   const EmptyInputs = username.trim() === "" || password.trim() === ""
 
@@ -69,5 +70,4 @@ const styles = StyleSheet.create({
     paddingStart: 50,
     paddingEnd: 50,
   }
-
 });

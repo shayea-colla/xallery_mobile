@@ -3,17 +3,13 @@
  * https://docs.expo.io/guides/color-schemes/
  */
 
-import { Text as DefaultText, View as DefaultView, ScrollView } from 'react-native';
+import { Text as DefaultText, View as DefaultView } from 'react-native';
 import { useTheme } from 'react-native-paper';
 
 import Colors from '@/constants/Colors';
 import { useColorScheme } from './useColorScheme';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-type ThemeProps = {
-  lightColor?: string;
-  darkColor?: string;
-};
 
 export type TextProps = DefaultText['props'];
 export type ViewProps = DefaultView['props'];
@@ -41,8 +37,8 @@ export function View(props: ViewProps) {
   return <DefaultView style={[{ backgroundColor: theme.colors.background }, style]} {...otherProps} />;
 }
 
-export function SafeAreaView(props: ViewProps) {
-  const { style, ...otherProps } = props;
+export function SafeAreaView(props:{ margins?: boolean } & ViewProps) {
+  const { margins = true, style, ...otherProps } = props;
   const insets = useSafeAreaInsets()
 
   // Apply safe area rules to this type of view
@@ -54,9 +50,21 @@ export function SafeAreaView(props: ViewProps) {
       flex: 1,
   }
 
+  let StyleMargins = {
+       marginEnd: 0,
+       marginStart: 0
+    }
+  
+  if (margins) {
+    StyleMargins = {
+       marginEnd: 8,
+       marginStart: 8,
+    }
+  } 
+
   return (
     <View style={safeStyle} >
-        <View style={[style, {marginEnd: 16, marginStart: 16}]} {...otherProps} />
+        <View style={[style, StyleMargins]} {...otherProps} />
     </View>
   );
 }

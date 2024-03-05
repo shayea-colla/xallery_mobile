@@ -1,68 +1,57 @@
-import { StyleSheet } from 'react-native'
-import { View } from '@/components/'
-import { ActivityIndicator, Text } from 'react-native-paper';
-import { ViewProps } from '../Themed';
-import { useEffect, useState } from 'react';
-import { useSession } from '@/authentication/ctx';
-import { shortRoomType } from '@/types'
-import { transformShortRooms } from '@/utils';
-import RoomsList from './RoomsListProps';
+import { FlatList, StyleSheet } from "react-native";
+import { View } from "@/components/";
+import { Divider, ActivityIndicator, Text } from "react-native-paper";
+import { ViewProps } from "../Themed";
+import { useSession } from "@/authentication/ctx";
+import { useQuery } from "@tanstack/react-query";
+import { fetchUserRoomsShort } from "@/network";
 
+import ProfileInfo from "./user/ProfileInfo";
+import { user } from "@/authentication";
+import { renderRoomList } from './renderRoomList';
 
-type RoomsInfoProps = { userId: number } & ViewProps
+type RoomsInfoProps = { user: user } & ViewProps;
 
-export default function DesignerView({ userId, style }: RoomsInfoProps) {
+export default function DesignerView({ user, style }: RoomsInfoProps) {
+  const { api } = useSession();
 
-    const { rooms , isLoading, error } = useRoomsShortDetailAsync(userId)
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["rooms", { userId: user.id }],
+    queryFn: async () => fetchUserRoomsShort(api, user.id),
+  });
 
+  const headerComponent = (
+    <>
+      <ProfileInfo user={user} style={{ marginBottom: 10 }} />
+      <Divider bold style={{ marginBottom: 10 }} />
+    </>
+  );
 
-    return (
-        <View style={[style, styles.container]}>
-            {isLoading 
-                ? ( error == "" ? <ActivityIndicator style={{marginTop: 8}} />: <Text>Coud not load rooms</Text> )
-                : (rooms !== null ? <RoomsList rooms={rooms} />: <Text>you do not have any rooms yet</Text>)
-            }
+  return (
+    <View style={[style, styles.container]}>
+      {isLoading && <ActivityIndicator style={{ marginTop: 8 }} />}
+      {isError && <Text>Some Error accured</Text>}
+      {(data || data !== undefined) && (
+        <View style={{flex: 1}}>
+          <FlatList
+            data={data}
+            renderItem={renderRoomList}
+            keyExtractor={(item) => item.id}
+            ListHeaderComponent={headerComponent}
+            ListFooterComponent={<View style={{marginBottom: 20}} />}
+            numColumns={2}
+            showsVerticalScrollIndicator={false}
+            columnWrapperStyle={{gap: 9}}
+            contentContainerStyle={{ gap: 10 }}
+          />
         </View>
-    )
+      )}
+    </View>
+  );
 }
-
 
 const styles = StyleSheet.create({
-    container: {
-        borderColor: 'white',
-        borderWidth: 1,
-        flex: 1,
-    },
-})
-
-
-
-function useRoomsShortDetailAsync(userId: number) {
-    const { api } = useSession()
-    const [rooms, setRooms] = useState<shortRoomType[] | null>(null)
-    const [isLoading, setIsLoading] = useState<boolean>(false)
-    const [error, setError] = useState<string>("")
-
-    useEffect(() => {
-        // Set the loading indicator
-        setIsLoading(true)
-
-        // get all rooms from server
-        api.get(`rooms/?owner=${userId}`)
-        .then(res => res.data)
-        .then((rooms) => {
-            // transform the rooms
-            setRooms(transformShortRooms(rooms))
-            setError("")
-        })
-        .catch(error => {
-            setError(String(error))
-        })
-        .finally(() => setIsLoading(false))
-
-    }, [])
-
-
-    return {rooms, isLoading, error}
-
-}
+  container: {
+    flex: 1,
+  },
+});

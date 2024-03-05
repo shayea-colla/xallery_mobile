@@ -1,2 +1,2 @@
-export { shortRoomType } from './room'
-export { fullRoomType } from './room'
+export { shortRoomType, fullRoomType, pictureType } from './room'
+export { user } from './user'

@@ -1,7 +1,6 @@
 import * as SecureStore from 'expo-secure-store';
 import * as React from 'react';
 import { user } from './AuthContext';
-import { Platform } from 'react-native';
 
 export type UseStateHook<T> = [[boolean, Session | null], (value: Session | null) => void];
 

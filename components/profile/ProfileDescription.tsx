@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native'
 import { ViewProps } from  '../Themed'
 import { View } from '../Themed';
-import { Text, useTheme } from 'react-native-paper';
+import { Text} from 'react-native-paper';
 
 
 type ProfileDescriptionType = { description: string | undefined} & ViewProps

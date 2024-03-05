@@ -1,7 +1,6 @@
 import { StyleSheet } from 'react-native'
 import { View, ViewProps } from '../Themed'
 import { Text } from 'react-native-paper'
-import { SimpleLineIcons as Icon } from '@expo/vector-icons';
 
 type PopularityInfoType = { followers?: number, following?: number } & ViewProps
 
@@ -22,7 +21,6 @@ export default function PopularityInfo (props: PopularityInfoType) {
 }
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         flexDirection: 'row',
         width: '50%',
         alignSelf: 'center',

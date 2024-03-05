@@ -1,17 +1,32 @@
 import { StyleSheet } from 'react-native'
-import { Surface, Text } from "react-native-paper";
+import { Surface, Text, useTheme } from "react-native-paper";
 import { View, ViewProps } from "../Themed";
 import { Image } from 'expo-image';
 
-type RoomCardImagePorps = {image: string} & ViewProps
 
-const RoomCardImage = ({image, style}: RoomCardImagePorps) => {
+type RoomCardProps = {name: string, description: string, background: string} & ViewProps
+
+export default function RoomCard (props: RoomCardProps) {
+    const { name, description, background, style, ...otherProps} = props
 
     return (
-        <View style={[style, styles.imageContainer]}>
+        <Surface mode='flat' style={[style, styles.container]} {...otherProps}>
+            <RoomCardImage background={background} />
+            <RoomCardContent style={{marginStart: 5, marginEnd: 5}} name={name} description={description} />
+        </Surface>
+    )
+}
+
+type RoomCardImagePorps = {background: string} & ViewProps
+
+const RoomCardImage = ({background, style}: RoomCardImagePorps) => {
+    const theme = useTheme()
+
+    return (
+        <View style={[style, styles.imageContainer, {backgroundColor: theme.colors.onPrimary }]}>
             <Image
                 style={styles.image}
-                source={image}
+                source={background}
                 contentFit='cover'
                 transition={100}
             />
@@ -20,29 +35,16 @@ const RoomCardImage = ({image, style}: RoomCardImagePorps) => {
 }
 
 
-type RoomCardTitleProps = {title: string} & ViewProps
-
-const RoomCardTitle = (props: RoomCardTitleProps) => {
-    const { title, style, ...otherProps} = props
-    return (
-        <View style={style} {...otherProps} >
-            <Text variant='titleMedium'>{title}</Text>
-        </View>
-    )
-}
-
-
-type RoomCardContentProps = {title: string, description: string} & ViewProps
+type RoomCardContentProps = {name: string, description: string } & ViewProps
 
 const RoomCardContent = (props: RoomCardContentProps) => {
-    const { title, description ,style, ...otherProps} = props
+    const { name, description, style, ...otherProps} = props
 
     // custom margin 
-    const margins = 6
     return (
-        <View style={[style, {marginStart: margins, marginEnd: margins}]} {...otherProps}>
-            <RoomCardTitle title={title} />
-            <Text numberOfLines={1} variant='bodySmall'>
+        <View style={[style, {backgroundColor: 'transparent'}]} {...otherProps}>
+            <Text style={style} variant='titleMedium'>{name}</Text>
+            <Text style={style} numberOfLines={1} variant='bodySmall'>
                 {description}
             </Text>
         </View>
@@ -50,26 +52,10 @@ const RoomCardContent = (props: RoomCardContentProps) => {
 }
 
 
-type RoomCardProps = {title: string, description: string, image: string} & ViewProps
-
-export default function RoomCard (props: RoomCardProps) {
-    const { title, description, image, style, ...otherProps} = props
-
-    return (
-        <Surface style={[style, styles.container]} {...otherProps}>
-            <RoomCardImage image={image} />
-            <RoomCardContent title={title} description={description} />
-        </Surface>
-    )
-}
-
-
 const styles = StyleSheet.create({
     container: {
-        width: '48%',
-        borderRadius: 13,
+        borderRadius: 10,
         paddingBottom: 9,
-        backgroundColor: 'white',
         overflow: 'hidden'
     },
     imageContainer: {

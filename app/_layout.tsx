@@ -1,4 +1,4 @@
-import FontAwesome from '@expo/vector-icons/FontAwesome';
+import FontAwesome from "@expo/vector-icons/FontAwesome"
 import { PaperProvider, useTheme } from 'react-native-paper';
 import { DarkTheme, LightTheme as DefaultTheme } from '@/constants/Theme'
 import { useFonts } from 'expo-font';
@@ -33,43 +33,36 @@ export default function RootLayout() {
     ...FontAwesome.font,
   });
 
+
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
     if (error) throw error;
   }, [error]);
-
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
 
 
   if (!loaded) {
     return null;
   }
 
-  return <RootLayoutNav />;
+  return <RootLayoutStack />;
 }
 
 
-function RootLayoutNav() {
+function RootLayoutStack() {
   const colorScheme = useColorScheme();
   const theme = useTheme()
 
   return (
-    <>
     <QueryClientProvider client={queryClient} >
       <SessionProvider>
         <PaperProvider theme={colorScheme == "dark" ? DarkTheme : DefaultTheme}>
           <StatusBar  backgroundColor={theme.colors.secondary} />
           <Stack>
             <Stack.Screen name="(app)" options={{ headerShown: false }} />
-            <Stack.Screen name="login" options={{ presentation: "modal", headerShown: false }} />
+            <Stack.Screen name="login" options={{ presentation: "card", headerShown: false }} />
           </Stack>
         </PaperProvider>
       </SessionProvider>
     </QueryClientProvider>
-    </>
   );
 }

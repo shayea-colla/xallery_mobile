@@ -4,11 +4,11 @@ import { View, ViewProps } from "../Themed";
 
 
 
-export default function LoadingIndicator(props: ViewProps) {
+export default function PageLoading(props: ViewProps) {
 
   return (
     <View style={[props.style, styles.container]} >
-        <ActivityIndicator />
+        <ActivityIndicator size={"large"} />
     </View>
   )
 }

@@ -41,7 +41,8 @@ const LightTheme = {
     },
     "surfaceDisabled": "rgba(30, 27, 30, 0.12)",
     "onSurfaceDisabled": "rgba(30, 27, 30, 0.38)",
-    "backdrop": "rgba(53, 46, 54, 0.4)"
+    "backdrop": "rgba(53, 46, 54, 0.4)",
+    "roundness": 12,
   }
 } 
 const DarkTheme = {

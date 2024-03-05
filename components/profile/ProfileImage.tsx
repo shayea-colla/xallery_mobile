@@ -1,6 +1,5 @@
 import { StyleSheet } from 'react-native'
 import { Image } from 'expo-image';
-import { Style } from 'react-native-paper/lib/typescript/components/List/utils';
 import { ViewProps } from  '../Themed'
 import { View } from '../Themed';
 import { Text, useTheme } from 'react-native-paper';
