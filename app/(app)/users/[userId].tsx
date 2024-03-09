@@ -3,7 +3,7 @@ import { useSession } from "@/authentication/ctx";
 import { SafeAreaView } from "@/components";
 import { PageLoading } from "@/components/core";
 import { UserProfile } from "@/components/profile";
-import { fetchUserInfo } from "@/network";
+import { fetchUserInfo, fetchUserRoomsShort } from "@/network";
 import { useQuery } from "@tanstack/react-query";
 import { useLocalSearchParams } from "expo-router";
 import { Text } from "react-native-paper";
@@ -12,18 +12,22 @@ export default function UserProfilePage() {
   const { userId } = useLocalSearchParams();
   const { api } = useSession();
 
-  const { data, isLoading, isError } = useQuery({
+  const user = useQuery({
     queryKey: ["user", { userId: userId }],
     queryFn: async () => fetchUserInfo(api, userId),
   });
 
-  console.log("No way home");
+  const rooms = useQuery({
+    queryKey: ["rooms", { userId: userId }],
+    queryFn: async () => fetchUserRoomsShort(api, userId),
+  });
+
 
   return (
     <SafeAreaView margins style={styles.container}>
-      {isLoading && <PageLoading />}
-      {isError && <Text>no way home so some error has accured alone</Text>}
-      {data && <UserProfile user={data}/>}
+      {(rooms.isLoading && user.isLoading) && <PageLoading />}
+      {(rooms.isError || user.isError) && <Text>{/* Fixme replace with error page*/}no way home so some error has accured alone</Text>}
+      {(rooms.data && user.data) && <UserProfile rooms={rooms.data} user={user.data}/>}
     </SafeAreaView>
   );
 }

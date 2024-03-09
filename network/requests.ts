@@ -47,3 +47,42 @@ export async function fetchRoomPictures(
   const pictures = await res.data;
   return transformPicturesList(pictures);
 }
+
+export async function fetchUsersByUsername(api: Axios, username: string): Promise<user[]> {
+  const res = await api.get(`accounts/?username=${username}`);
+  const data = await res.data;
+  return data;
+}
+
+
+export async function fetchAllDesigners(api: Axios): Promise<user[]> {
+  const res = await api.get(`accounts/`);
+  const data = await res.data;
+  return data;
+}
+
+export async function fetchFollowings(api: Axios, followingIds: number[] | undefined): Promise<user[]> {
+  // how to fetch followings
+  if (followingIds) {
+    return followingIds.map(async (following) => {
+      const res = await api.get(`accounts/${following}/`)
+      const data = await res.data
+      return data
+    })
+  }
+
+  return []
+}
+
+export async function fetchFollowers(api: Axios, followerIds: number[] | undefined): Promise<user[]> {
+  // how to fetch followings
+  if (followerIds) {
+    return followerIds.map(async (follower) => {
+      const res = await api.get(`accounts/${follower}/`)
+      const data = await res.data
+      return data
+    })
+  }
+
+  return []
+}

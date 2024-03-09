@@ -59,9 +59,6 @@ export function SessionProvider(props: React.PropsWithChildren) {
       // Get the response data
       const data = transformData(response.data);
 
-      // Set the current user
-      setUser(transformUser(data.user));
-
       // Set the session token
       setSession(data.token);
     } catch (error) {

@@ -1,25 +1,16 @@
 import { FlatList, StyleSheet } from "react-native";
 import { View } from "@/components/";
-import { Divider, ActivityIndicator, Text } from "react-native-paper";
+import { Divider, Text } from "react-native-paper";
 import { ViewProps } from "../Themed";
-import { useSession } from "@/authentication/ctx";
-import { useQuery } from "@tanstack/react-query";
-import { fetchUserRoomsShort } from "@/network";
 
 import ProfileInfo from "./user/ProfileInfo";
 import { user } from "@/authentication";
-import { renderRoomList } from './renderRoomList';
+import { renderRoomList } from "./renderRoomList";
+import { shortRoomType } from "@/types";
 
-type RoomsInfoProps = { user: user } & ViewProps;
+type RoomsInfoProps = { user: user; rooms: shortRoomType[] } & ViewProps;
 
-export default function DesignerView({ user, style }: RoomsInfoProps) {
-  const { api } = useSession();
-
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["rooms", { userId: user.id }],
-    queryFn: async () => fetchUserRoomsShort(api, user.id),
-  });
-
+export default function DesignerView({ user, rooms, style }: RoomsInfoProps) {
   const headerComponent = (
     <>
       <ProfileInfo user={user} style={{ marginBottom: 10 }} />
@@ -27,25 +18,34 @@ export default function DesignerView({ user, style }: RoomsInfoProps) {
     </>
   );
 
+  if (rooms && rooms.length == 0) {
+    return (
+      <View style={[style, styles.container]}>
+        {headerComponent}
+        <View style={{ flex: 1, justifyContent: "center" }}>
+          <Text style={{ textAlign: "center" }} variant="bodyLarge">
+            no rooms found for this user.
+          </Text>
+        </View>
+      </View>
+    );
+  }
+
   return (
     <View style={[style, styles.container]}>
-      {isLoading && <ActivityIndicator style={{ marginTop: 8 }} />}
-      {isError && <Text>Some Error accured</Text>}
-      {(data || data !== undefined) && (
-        <View style={{flex: 1}}>
-          <FlatList
-            data={data}
-            renderItem={renderRoomList}
-            keyExtractor={(item) => item.id}
-            ListHeaderComponent={headerComponent}
-            ListFooterComponent={<View style={{marginBottom: 20}} />}
-            numColumns={2}
-            showsVerticalScrollIndicator={false}
-            columnWrapperStyle={{gap: 9}}
-            contentContainerStyle={{ gap: 10 }}
-          />
-        </View>
-      )}
+      <View style={{ flex: 1 }}>
+        <FlatList
+          data={rooms}
+          renderItem={renderRoomList}
+          keyExtractor={(item) => item.id}
+          ListHeaderComponent={headerComponent}
+          ListFooterComponent={<View style={{ marginBottom: 20 }} />}
+          numColumns={2}
+          showsVerticalScrollIndicator={false}
+          columnWrapperStyle={{ gap: 18 }}
+          contentContainerStyle={{ gap: 20 }}
+        />
+      </View>
     </View>
   );
 }

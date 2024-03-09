@@ -25,7 +25,7 @@ export default function ProfileImage (props: ProfileImageType) {
             <Image 
                 style={[styles.image, {borderColor: theme.colors.secondary}]}
                 source={picture} 
-                contentFit='contain'
+                contentFit='cover'
                 placeholder={placeholder}
                 transition={300}
             />

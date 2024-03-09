@@ -24,6 +24,7 @@ export function transformUser(user: any): user {
     following: user.following,
     likedPictures: user.liked_pictures,
     likedRooms: user.liked_rooms,
+    tags: user?.designermore.tags,
     rooms: user?.rooms, // this field doesn't exist on Normal User
     type: user.type,
   };

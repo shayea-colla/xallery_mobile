@@ -41,16 +41,16 @@ export default function RoomInfo({
 }
 
 function OwnerInfo({ userId, style }: { userId: number } & ViewProps) {
+  const { user } = useSession()
   const userQuery = useFetchUserInfo(userId);
   const theme = useTheme();
 
   const handleNavigation = () => {
-      router.push(`/(app)/users/${userId}`);
-  //  if (user.id == userId) {
-  //    router.navigate("/profile")
-  //  } else {
-  //    router.push(`/(app)/users/${userId}`);
-  //  }
+      if (user?.id == userId) {
+        router.navigate("/profile")
+      } else {
+        router.navigate(`/(app)/users/${userId}`);
+      }
   };
 
   return (

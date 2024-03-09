@@ -11,6 +11,7 @@ export type user = {
   followers?: number[],
   likedPictures: string[],
   likedRooms: string[],
+  tags: string[],
   rooms: string[],
   type: "NORMAL" | "DESIGNER"
 }

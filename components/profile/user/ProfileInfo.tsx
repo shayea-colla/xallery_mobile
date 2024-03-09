@@ -10,6 +10,8 @@ type profileInfoProps = { user: user } & ViewProps
 
 export default function ProfileInfo ({ user, style }: profileInfoProps) {
 
+  console.log(user.picture)
+
   return (
     <View style={[style, styles.container]}>
         <ProfileImage style={{marginTop: 40}} picture={user.picture} username={user.username} />

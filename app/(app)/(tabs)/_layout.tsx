@@ -53,7 +53,6 @@ function MainLayout() {
                 : options.title !== undefined
                 ? options.title
                 : route.title;
-
             return label;
           }}
         />
