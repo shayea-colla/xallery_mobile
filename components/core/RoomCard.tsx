@@ -21,6 +21,8 @@ type RoomCardImagePorps = {background: string} & ViewProps
 
 const RoomCardImage = ({background, style}: RoomCardImagePorps) => {
     const theme = useTheme()
+    // const placeholder = require("@/assets/images/room_background_placeholder.jpg")
+    const blurhash = "L15OKVs957OsoffQayfk0gSh^jwH"
 
     return (
         <View style={[style, styles.imageContainer, {backgroundColor: theme.colors.onPrimary }]}>
@@ -28,6 +30,7 @@ const RoomCardImage = ({background, style}: RoomCardImagePorps) => {
                 style={styles.image}
                 source={background}
                 contentFit='cover'
+                placeholder={blurhash}
                 transition={100}
             />
         </View>

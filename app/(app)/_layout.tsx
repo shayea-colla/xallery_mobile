@@ -10,7 +10,7 @@ import { fetchUserProfile } from "@/network";
 import { useSession } from "@/authentication/ctx";
 
 export const unstable_settings = {
-  initialRouteName: "createRoom",
+  initialRouteName: "(tabs)",
 };
 
 export default function Layout() {
@@ -24,9 +24,6 @@ export default function Layout() {
     enabled: !!session,
   });
 
-  if (profile.isFetching) {
-    console.log("fetching");
-  }
   useEffect(() => {
     if (profile.data) {
       setUser(profile.data);
@@ -40,7 +37,6 @@ export default function Layout() {
   //    false = true ( user doesn't exist )         && false (finished loading, couldn't fetch user info) ... show the application ( set user to null)
   // Check if token exist and the user is not loaded yet
   if (isLoading || userLoaded) {
-    console.log("still loading...");
     return null;
   }
 
@@ -62,7 +58,7 @@ export default function Layout() {
   });
 
   return (
-    <Stack initialRouteName="createRoom" screenOptions={{ headerShown: false }}>
+    <Stack initialRouteName="(tabs)" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="(tabs)" />
       <Stack.Screen name="users/[userId]" />
       <Stack.Screen name="[roomId]" />

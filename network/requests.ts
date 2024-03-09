@@ -2,12 +2,16 @@ import {
   transformUser,
   transformShortRoomsList,
   transformPicturesList,
+  transformRoom,
 } from "@/utils";
-import { user } from "@/authentication";
 import { Axios } from "axios";
-import { fullRoomType, shortRoomType } from "@/types";
-import { pictureType } from "@/types/room";
-import { transformRoom } from "@/utils/transformers";
+import {
+  pictureType,
+  user,
+  fullRoomType,
+  shortRoomType,
+  uploadFileType,
+} from "@/types";
 
 export async function fetchUserProfile(api: Axios): Promise<user> {
   const res = await api.get("accounts/profile/");
@@ -48,12 +52,14 @@ export async function fetchRoomPictures(
   return transformPicturesList(pictures);
 }
 
-export async function fetchUsersByUsername(api: Axios, username: string): Promise<user[]> {
+export async function fetchUsersByUsername(
+  api: Axios,
+  username: string
+): Promise<user[]> {
   const res = await api.get(`accounts/?username=${username}`);
   const data = await res.data;
   return data;
 }
-
 
 export async function fetchAllDesigners(api: Axios): Promise<user[]> {
   const res = await api.get(`accounts/`);
@@ -61,28 +67,70 @@ export async function fetchAllDesigners(api: Axios): Promise<user[]> {
   return data;
 }
 
-export async function fetchFollowings(api: Axios, followingIds: number[] | undefined): Promise<user[]> {
+export async function fetchFollowings(
+  api: Axios,
+  followingIds: number[] | undefined
+): Promise<user[]> {
   // how to fetch followings
   if (followingIds) {
-    return followingIds.map(async (following) => {
-      const res = await api.get(`accounts/${following}/`)
-      const data = await res.data
-      return data
-    })
+    return followingIds.map(async (following): Promise<user> => {
+      const res = await api.get(`accounts/${following}/`);
+      const data = await res.data;
+      return data;
+    });
   }
 
-  return []
+  return [];
 }
 
-export async function fetchFollowers(api: Axios, followerIds: number[] | undefined): Promise<user[]> {
+export async function fetchFollowers(
+  api: Axios,
+  followerIds: number[] | undefined
+): Promise<user[]> {
   // how to fetch followings
   if (followerIds) {
-    return followerIds.map(async (follower) => {
-      const res = await api.get(`accounts/${follower}/`)
-      const data = await res.data
-      return data
-    })
+    return followerIds.map(async (follower):Promise<user> => {
+      const res = await api.get(`accounts/${follower}/`);
+      const data = await res.data;
+      return data;
+    });
   }
 
-  return []
+  return [];
+}
+
+export async function createNewRoom(
+  api: Axios,
+  name: string,
+  discription: string,
+  background: uploadFileType
+) {
+
+  // Contruct a form data object
+  const formData = new FormData();
+
+  // Append necessary fields
+  formData.append("name", name);
+  formData.append("discription", discription);
+  formData.append("background", background); // Ignore TypeScript warning, it works fine
+
+  // Construct the request config
+  const config = {
+    url: "rooms/",
+    method: "post",
+    maxBodyLength: Infinity,
+    headers: {
+      "Content-Type": "multipart/form-data"
+    },
+    data: formData,
+
+    // necessary due to axios issue
+    transformRequest: () => {
+      return formData;
+    },
+  }
+
+  const res = await api.request(config)
+  const data = await res.data;
+  return data;
 }

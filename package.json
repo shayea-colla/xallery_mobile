@@ -24,6 +24,7 @@
     "axios": "^1.6.7",
     "eslint": "^8.57.0",
     "expo": "~50.0.7",
+    "expo-file-system": "^16.0.8",
     "expo-font": "~11.10.3",
     "expo-haptics": "~12.8.1",
     "expo-image": "^1.10.6",

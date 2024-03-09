@@ -1,101 +1,133 @@
 import { useState } from "react";
+import { KeyboardAvoidingView } from "react-native";
 import { SafeAreaView, View } from "@/components";
-import { Button, TextInput, Text } from "react-native-paper";
+import {
+  ActivityIndicator,
+  Button,
+  Dialog,
+  Portal,
+  Text,
+  TextInput,
+} from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 import { RoomCard } from "@/components/core";
 import { ViewProps } from "@/components/Themed";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
+import { useSession } from "@/authentication/ctx";
+import { createNewRoom } from "@/network/requests";
+import { router } from "expo-router";
+
+type fileUploadType = {
+  uri: string;
+  type: string;
+  name: string | "backgroundImage";
+};
 
 export default function createRoom() {
-  const [roomName, setRoomName] = useState<string>("");
-  const [roomDescription, setRoomDescription] = useState<string>("");
-  const [roomBackground, setRoomBackground] = useState<ImagePicker.ImagePickerResult>();
-  // Room Form consist of :
-  // - room name
-  // - room description
-  // - room background
-  // - room tags
+  const { api } = useSession();
+  const [name, setName] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [background, setBackground] = useState<fileUploadType>();
+  const [loading, setLoading] = useState(false);
+  const queryCliet = useQueryClient();
+
+  const createRoomQuery = useMutation({
+    mutationKey: ["createRoom"],
+
+    mutationFn: async () => createNewRoom(api, name, description, background),
+
+    onSuccess: () => {
+      queryCliet.invalidateQueries({ queryKey: ["profile"] });
+      router.replace("/profile");
+    },
+
+    onError: () => {
+      alert(
+        "failed to create your room,check your phone is connected to the internet and try again"
+      );
+    },
+    onSettled: () => setLoading(false),
+  });
 
   const handleRoomCreation = () => {
-    // check for all input if populated or not, or you can just check for the preview variable
     if (roomReady) {
-      // you need
-      alert("room is ready")
-      return
+      setLoading(true);
+      createRoomQuery.mutate();
     }
   };
 
-
   const handleImagePicking = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [4, 3],
+      aspect: [4, 2],
       quality: 1,
     });
 
     if (!result.canceled) {
-      setRoomBackground(result);
+      // Get ONLY the file extention ,
+      const mimType = result.assets[0].mimeType;
+      const [, extention] = mimType?.split("/") || ["image", "png"];
+      // Generate a new filename ({currentDate}.{imageExtention}) , ( fileName provided by result is mostly null )
+      const fileName = `${new Date()}.${extention}`;
+
+      setBackground({
+        uri: result.assets[0].uri,
+        type: mimType || "image/*",
+        name: fileName,
+      });
     }
   };
 
-  const onRoomNameChange = (text: string) => {
-    setRoomName(text)
-  }
-
-  const onRoomDescriptionChange = (text: string) => {
-    setRoomDescription(text)
-  }
-
-  const roomReady = roomBackground && roomName && roomDescription;
+  const roomReady = background && name && description;
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <View
-        style={{ flex: 1, justifyContent: "space-between", marginBottom: 20 }}
+      <KeyboardAvoidingView
+        style={{ flex: 1, justifyContent: "flex-start", marginBottom: 20 }}
       >
         <View>
           <TextInput
-            value={roomName}
-            onChangeText={onRoomNameChange}
-            mode="outlined"
+            style={{ marginBottom: 8 }}
+            value={name}
+            onChangeText={(text) => setName(text)}
+            mode="flat"
             label="name"
           />
           <TextInput
-            value={roomDescription}
-            onChangeText={onRoomDescriptionChange}
+            value={description}
+            onChangeText={(text) => setDescription(text)}
             numberOfLines={5}
             multiline
-            mode="outlined"
+            mode="flat"
             label="Description"
           />
           <Button
-            style={{ marginTop: 10 }}
+            style={{ marginTop: 10, alignSelf: "center" }}
             icon={"image"}
-            mode="elevated"
+            mode="text"
             onPress={handleImagePicking}
           >
             Choose background image
           </Button>
-          {roomReady && (
-            <PreviwCard
-              style={{
-                width: "50%",
-                alignSelf: "center",
-                marginTop: 20,
-              }}
-              name={roomName}
-              background={roomBackground.assets[0].uri}
-              description={roomDescription}
-            />
-          )}
-        </View>
 
-        <View>
-          <Button onPress={handleRoomCreation} mode="contained">
-            Create
-          </Button>
+          <PreviwCard
+            style={{
+              width: "50%",
+              alignSelf: "center",
+              marginTop: 10,
+            }}
+            name={name}
+            background={background?.uri}
+            description={description}
+          />
         </View>
-      </View>
+        <Button style={{alignSelf: 'center', marginTop: 25}} onPress={handleRoomCreation} mode="contained">
+          Create
+        </Button>
+      </KeyboardAvoidingView>
+      <LoadingDialog title="Creating your room..." visible={loading} />
     </SafeAreaView>
   );
 }
@@ -110,5 +142,30 @@ function PreviwCard({
     <View style={[style]}>
       <RoomCard background={background} name={name} description={description} />
     </View>
+  );
+}
+
+function LoadingDialog({
+  title,
+  visible,
+  content,
+}: {
+  title: string;
+  visible: boolean;
+  content?: React.ReactNode;
+}) {
+  return (
+    <Portal>
+      <Dialog visible={visible}>
+        <Dialog.Title>{title}</Dialog.Title>
+        <Dialog.Content>
+          {content ? (
+            <Text>{content}</Text>
+          ) : (
+            <ActivityIndicator size={"large"} />
+          )}
+        </Dialog.Content>
+      </Dialog>
+    </Portal>
   );
 }
