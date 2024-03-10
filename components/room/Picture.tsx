@@ -6,16 +6,16 @@ import { ViewProps } from "@/components/Themed";
 import AutoHeightImage from "react-native-auto-height-image";
 
 export default function Picture({
-  picture,
+  uri,
   style,
   width,
-}: { picture: pictureType; width: number } & ViewProps) {
+}: { uri: string; width: number } & ViewProps) {
   /**
    * picture compoenent that takes a pictureType object and display the image of that picture ( picture.image )
    */
   return (
-      <View  style={[style, styels.container]}>
-      <AutoHeightImage width={width} source={{ uri: picture.image }} />
+    <View style={[style, styels.container]}>
+      <AutoHeightImage width={width} source={{ uri: uri }} />
     </View>
   );
 }

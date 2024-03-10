@@ -8,6 +8,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { fetchUserProfile } from "@/network";
 
 import { useSession } from "@/authentication/ctx";
+import { StatusBar } from "expo-status-bar";
 
 export const unstable_settings = {
   initialRouteName: "(tabs)",

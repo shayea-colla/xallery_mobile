@@ -1,16 +1,12 @@
-import { StyleSheet } from 'react-native';
-import { SafeAreaView } from '@/components/Themed';
-import { Button, Text } from 'react-native-paper';
-import { useSession } from '@/authentication/ctx';
-import { router } from 'expo-router';
+import { StyleSheet } from "react-native";
+import { SafeAreaView } from "@/components/Themed";
+import { Text } from 'react-native-paper';
 
-export default function TabOneScreen() {
-  const {user, Logout}  = useSession()
+export default function Index() {
+
   return (
     <SafeAreaView style={styles.container}>
-      <Text variant='headlineLarge'>{user?.username}</Text>
-      <Button onPress={() => Logout()} >logout</Button>
-      <Button onPress={() => router.navigate("/createRoom")} >create room</Button>
+      <Text variant='displayLarge'>solo</Text>
     </SafeAreaView>
   );
 }
@@ -18,7 +14,7 @@ export default function TabOneScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

@@ -8,4 +8,6 @@ export {
   fetchAllDesigners,
   fetchFollowers,
   fetchFollowings,
+  createNewRoom,
+  addPicture,
 } from "./requests";

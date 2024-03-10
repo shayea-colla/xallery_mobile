@@ -1,14 +1,7 @@
 import { useState } from "react";
 import { KeyboardAvoidingView } from "react-native";
 import { SafeAreaView, View } from "@/components";
-import {
-  ActivityIndicator,
-  Button,
-  Dialog,
-  Portal,
-  Text,
-  TextInput,
-} from "react-native-paper";
+import { Button, TextInput } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 import { RoomCard } from "@/components/core";
 import { ViewProps } from "@/components/Themed";
@@ -17,6 +10,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "@/authentication/ctx";
 import { createNewRoom } from "@/network/requests";
 import { router } from "expo-router";
+import { LoadingDialog } from '@/components/core'
 
 type fileUploadType = {
   uri: string;
@@ -35,7 +29,7 @@ export default function createRoom() {
   const createRoomQuery = useMutation({
     mutationKey: ["createRoom"],
 
-    mutationFn: async () => createNewRoom(api, name, description, background),
+    mutationFn: async () => await createNewRoom(api, name, description, background),
 
     onSuccess: () => {
       queryCliet.invalidateQueries({ queryKey: ["profile"] });
@@ -123,7 +117,11 @@ export default function createRoom() {
             description={description}
           />
         </View>
-        <Button style={{alignSelf: 'center', marginTop: 25}} onPress={handleRoomCreation} mode="contained">
+        <Button
+          style={{ alignSelf: "center", marginTop: 25 }}
+          onPress={handleRoomCreation}
+          mode="contained"
+        >
           Create
         </Button>
       </KeyboardAvoidingView>
@@ -142,30 +140,5 @@ function PreviwCard({
     <View style={[style]}>
       <RoomCard background={background} name={name} description={description} />
     </View>
-  );
-}
-
-function LoadingDialog({
-  title,
-  visible,
-  content,
-}: {
-  title: string;
-  visible: boolean;
-  content?: React.ReactNode;
-}) {
-  return (
-    <Portal>
-      <Dialog visible={visible}>
-        <Dialog.Title>{title}</Dialog.Title>
-        <Dialog.Content>
-          {content ? (
-            <Text>{content}</Text>
-          ) : (
-            <ActivityIndicator size={"large"} />
-          )}
-        </Dialog.Content>
-      </Dialog>
-    </Portal>
   );
 }

@@ -19,7 +19,10 @@ export async function fetchUserProfile(api: Axios): Promise<user> {
   return transformUser(data);
 }
 
-export async function fetchUserInfo(api: Axios, userId: number): Promise<user> {
+export async function fetchUserInfo(
+  api: Axios,
+  userId: user["id"]
+): Promise<user> {
   const res = await api.get(`accounts/${userId}/`);
   const data = await res.data;
   return transformUser(data);
@@ -27,7 +30,7 @@ export async function fetchUserInfo(api: Axios, userId: number): Promise<user> {
 
 export async function fetchUserRoomsShort(
   api: Axios,
-  userId: number
+  userId: user["id"]
 ): Promise<shortRoomType[]> {
   const res = await api.get(`rooms/?owner=${userId}`);
   const rooms = await res.data;
@@ -36,7 +39,7 @@ export async function fetchUserRoomsShort(
 
 export async function fetchRoomDetail(
   api: Axios,
-  roomId: string
+  roomId: fullRoomType["id"]
 ): Promise<fullRoomType> {
   const res = await api.get(`rooms/${roomId}/`);
   const room = await res.data;
@@ -45,7 +48,7 @@ export async function fetchRoomDetail(
 
 export async function fetchRoomPictures(
   api: Axios,
-  roomId: string
+  roomId: fullRoomType["id"]
 ): Promise<pictureType[]> {
   const res = await api.get(`pictures/?room=${roomId}`);
   const pictures = await res.data;
@@ -69,7 +72,7 @@ export async function fetchAllDesigners(api: Axios): Promise<user[]> {
 
 export async function fetchFollowings(
   api: Axios,
-  followingIds: number[] | undefined
+  followingIds: user["id"][] | undefined
 ): Promise<user[]> {
   // how to fetch followings
   if (followingIds) {
@@ -85,11 +88,11 @@ export async function fetchFollowings(
 
 export async function fetchFollowers(
   api: Axios,
-  followerIds: number[] | undefined
+  followerIds: user["id"][] | undefined
 ): Promise<user[]> {
   // how to fetch followings
   if (followerIds) {
-    return followerIds.map(async (follower):Promise<user> => {
+    return followerIds.map(async (follower): Promise<user> => {
       const res = await api.get(`accounts/${follower}/`);
       const data = await res.data;
       return data;
@@ -105,7 +108,6 @@ export async function createNewRoom(
   discription: string,
   background: uploadFileType
 ) {
-
   // Contruct a form data object
   const formData = new FormData();
 
@@ -120,7 +122,7 @@ export async function createNewRoom(
     method: "post",
     maxBodyLength: Infinity,
     headers: {
-      "Content-Type": "multipart/form-data"
+      "Content-Type": "multipart/form-data",
     },
     data: formData,
 
@@ -128,9 +130,37 @@ export async function createNewRoom(
     transformRequest: () => {
       return formData;
     },
-  }
+  };
 
-  const res = await api.request(config)
-  const data = await res.data;
-  return data;
+  const res = await api.request(config);
+  return await res.data;
+}
+
+export async function addPicture(
+  api: Axios,
+  picture: uploadFileType,
+  roomId: fullRoomType["id"]
+): Promise<pictureType> {
+  const formData = new FormData();
+
+  formData.append("room", roomId);
+  formData.append("image", picture);
+
+  const config = {
+    url: "pictures/",
+    method: "post",
+    maxBodyLength: Infinity,
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+    data: formData,
+
+    // necessary due to axios issue
+    transformRequest: () => {
+      return formData;
+    },
+  };
+
+  const res = await api.request(config);
+  return await res.data;
 }

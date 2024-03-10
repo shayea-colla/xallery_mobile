@@ -1,5 +1,5 @@
 import { FlatList, StyleSheet } from "react-native";
-import { USER_TYPE} from "@/authentication/AuthContext";
+import { USER_TYPE } from "@/authentication/AuthContext";
 import { View, ViewProps } from "@components/Themed";
 import MyProfileInfo from "./MyProfileInfo";
 import { ActivityIndicator, Divider, Text, FAB } from "react-native-paper";
@@ -47,7 +47,8 @@ function MyDesignerProfile({ user }: myProfileProps) {
       <FAB
         style={{ position: "absolute", bottom: 12, right: 12 }}
         icon="plus"
-        onPress={() => router.navigate("/designers")}
+        label="New Room"
+        onPress={() => router.navigate("/createRoom")}
       />
     </View>
   );
@@ -69,7 +70,6 @@ function MyProfileRoomsList({ rooms }: { rooms: shortRoomType[] } & ViewProps) {
     </View>
   );
 }
-
 
 function MyNormalProfile({ user }: myProfileProps) {
   return (
