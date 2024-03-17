@@ -5,6 +5,7 @@
 
 import { Text as DefaultText, View as DefaultView } from 'react-native';
 import { useTheme } from 'react-native-paper';
+import { margins as styleMargins } from './Styles'
 
 import Colors from '@/constants/Colors';
 import { useColorScheme } from './useColorScheme';
@@ -56,10 +57,7 @@ export function SafeAreaView(props:{ margins?: boolean } & ViewProps) {
     }
   
   if (margins) {
-    StyleMargins = {
-       marginEnd: 8,
-       marginStart: 8,
-    }
+    StyleMargins = styleMargins.startEndMargins
   } 
 
   return (

@@ -109,7 +109,7 @@ export default function AddPicture({ room }: { room: fullRoomType }) {
       const fileName = `${new Date()}.${extention}`;
 
       // Fixme ( imageHiehgLevel is somewhat uncorrect, find the problem and fix it)
-      let level = calculateImageHeightLevel(image.height) - 2;
+      let level = calculateImageHeightLevel(image.height);
 
       if (level > snapPoints.length - 1) {
         // Set level to be the heighest
@@ -128,6 +128,7 @@ export default function AddPicture({ room }: { room: fullRoomType }) {
   };
 
   const handleCameraPicking = async () => {
+    // TODO ( complete camera implementaion )
     const perm = await ImagePicker.getCameraPermissionsAsync();
 
     console.log(perm);
